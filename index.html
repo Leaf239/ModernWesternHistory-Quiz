@@ -121,6 +121,7 @@
     const storeKey = 'western-modern-society-quiz-v1';
     let state = JSON.parse(localStorage.getItem(storeKey) || '{"current":0,"responses":{},"checked":{}}');
     let current = Math.min(Math.max(state.current || 0, 0), questions.length - 1);
+    let isChangingQuestion = false;
     const $ = s => document.querySelector(s);
     const normalize = value => value.replace(/[\s··,.'‘’“”"()（）\-]/g, '').toLowerCase();
     function save(){ state.current=current; localStorage.setItem(storeKey, JSON.stringify(state)); }
@@ -142,8 +143,14 @@
       state.checked[q.n]=true; save(); render();
     }
     function changeQuestion(next){
+      if(isChangingQuestion || next===current) return;
+      isChangingQuestion = true;
       const card=$('.question-card'); card.classList.add('question-swap');
-      setTimeout(()=>{ current=next; save(); render(); $('#quiz').classList.add('view-enter'); clearAnimation($('#quiz')); },180);
+      setTimeout(()=>{
+        card.classList.remove('question-swap');
+        current=next; save(); render(); $('#quiz').classList.add('view-enter'); clearAnimation($('#quiz'));
+        isChangingQuestion = false;
+      },180);
     }
     function clearAnimation(element){ setTimeout(()=>element.classList.remove('view-enter','is-leaving','question-swap'),450); }
     function startQuiz(){
