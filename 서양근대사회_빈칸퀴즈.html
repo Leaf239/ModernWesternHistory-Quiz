@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#66c9ed" />
+  <title>서양 근대 사회 빈칸 퀴즈</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2366c9ed'/%3E%3Cpath d='M18 33l9 9 19-20' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <style>
+    :root { color-scheme:light dark; --sky:#66c9ed; --sky-deep:#159bc9; --sky-pale:#eaf9ff; --ink:#1d2a33; --muted:#70808b; --line:#dce7eb; --input-line:#a9bbc3; --focus-pale:#dff6ff; --good:#28b66f; --good-pale:#e8f9f0; --bad:#ef6464; --bad-pale:#fff0f0; --canvas:#ffffff; --surface:#ffffff; --shadow:rgba(21,155,201,.13); }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme]) { --sky:#75d5f5; --sky-deep:#5ccbf0; --sky-pale:#103540; --ink:#e8f5f8; --muted:#a6bac1; --line:#2a424b; --input-line:#5b7580; --focus-pale:#164857; --good:#4ed58d; --good-pale:#123c2b; --bad:#ff7f7f; --bad-pale:#452128; --canvas:#0b151a; --surface:#122128; --shadow:rgba(0,0,0,.28); } }
+    :root[data-theme="dark"] { --sky:#75d5f5; --sky-deep:#5ccbf0; --sky-pale:#103540; --ink:#e8f5f8; --muted:#a6bac1; --line:#2a424b; --input-line:#5b7580; --focus-pale:#164857; --good:#4ed58d; --good-pale:#123c2b; --bad:#ff7f7f; --bad-pale:#452128; --canvas:#0b151a; --surface:#122128; --shadow:rgba(0,0,0,.28); }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:var(--canvas); font-family:system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif; transition:background .25s ease,color .25s ease; }
+    button, input { font:inherit; }
+    button { cursor:pointer; }
+    .app { position:relative; width:min(100%, 680px); min-height:100vh; margin:auto; padding:24px 20px 36px; display:flex; flex-direction:column; }
+    .theme-toggle { position:absolute; z-index:3; top:22px; right:20px; width:42px; height:42px; border:1px solid var(--line); border-radius:50%; color:var(--ink); background:var(--surface); box-shadow:0 4px 16px var(--shadow); font-size:18px; transition:transform .2s ease, background .25s ease; }
+    .theme-toggle:hover { transform:rotate(12deg) scale(1.04); }
+    .welcome { flex:1; display:flex; flex-direction:column; justify-content:center; padding:18px 2px 42px; }
+    .welcome h1 { max-width:450px; margin:0 0 14px; font-size:clamp(34px, 9vw, 46px); line-height:1.12; letter-spacing:-.06em; }
+    .welcome p { max-width:470px; margin:0; color:var(--muted); font-size:17px; line-height:1.65; word-break:keep-all; }
+    .welcome-meta { display:flex; gap:8px; flex-wrap:wrap; margin:28px 0 28px; }
+    .welcome-meta span { padding:8px 12px; border-radius:999px; color:#477382; background:var(--sky-pale); font-size:14px; font-weight:800; }
+    .start-quiz { max-width:460px; flex:none; }
+    .privacy-note { max-width:460px; margin:15px 2px 0; color:var(--muted); font-size:13px; line-height:1.5; }
+    .view-enter { animation:viewEnter .42s cubic-bezier(.2,.8,.2,1) both; }
+    .is-leaving { pointer-events:none; animation:viewLeave .2s ease both; }
+    .question-swap { animation:questionSwap .2s ease both; }
+    @keyframes viewEnter { from { opacity:0; transform:translateY(16px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes viewLeave { to { opacity:0; transform:translateY(-10px) scale(.985); } }
+    @keyframes questionSwap { to { opacity:0; transform:translateX(-12px); } }
+    .top { display:flex; align-items:center; gap:15px; margin-bottom:28px; }
+    .close { width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:#9cacb5; font-size:27px; line-height:1; }
+    .progress-track { height:12px; flex:1; overflow:hidden; border-radius:999px; background:#e9f0f3; }
+    .progress-fill { height:100%; border-radius:inherit; background:var(--sky); transition:width .25s ease; }
+    .counter { min-width:46px; color:var(--muted); font-size:14px; font-weight:800; text-align:right; }
+    main { flex:1; display:flex; flex-direction:column; }
+    .eyebrow { margin:8px 0 9px; color:var(--sky-deep); font-size:14px; font-weight:850; letter-spacing:.02em; }
+    h1 { margin:0 0 13px; font-size:clamp(26px, 7vw, 34px); line-height:1.23; letter-spacing:-.045em; }
+    .guide { margin:0 0 29px; color:var(--muted); font-size:16px; line-height:1.55; }
+    .question-card { border:2px solid var(--line); border-radius:22px; padding:25px 21px; background:var(--surface); }
+    .sentence { margin:0; font-size:clamp(19px, 5.4vw, 23px); font-weight:650; line-height:2.05; letter-spacing:-.027em; word-break:keep-all; }
+    .blank { width:clamp(115px, 37vw, 175px); height:39px; margin:0 3px; padding:0 8px; border:0; border-bottom:3px solid var(--input-line); border-radius:0; outline:0; color:var(--ink); background:var(--sky-pale); font-size:17px; font-weight:750; line-height:1; text-align:center; vertical-align:middle; transition:.15s; }
+    .blank:focus { border-bottom-color:var(--sky-deep); background:var(--focus-pale); }
+    .blank.is-good { border-bottom-color:var(--good); background:var(--good-pale); }
+    .blank.is-bad { border-bottom-color:var(--bad); background:var(--bad-pale); }
+    .feedback { min-height:62px; margin-top:17px; padding:0 5px; display:flex; align-items:center; color:var(--muted); font-size:15px; font-weight:700; line-height:1.45; }
+    .feedback.good { color:#148550; } .feedback.bad { color:#cf4848; }
+    .actions { display:flex; gap:10px; margin-top:auto; padding-top:20px; }
+    .secondary, .primary { min-height:54px; border-radius:16px; font-weight:850; font-size:17px; }
+    .secondary { width:58px; border:2px solid var(--line); color:var(--muted); background:var(--surface); }
+    .secondary:disabled { opacity:.35; cursor:not-allowed; }
+    .primary { flex:1; border:0; color:#fff; background:var(--sky-deep); box-shadow:0 4px 0 #09769d; transform:translateY(0); }
+    .primary:active { box-shadow:0 1px 0 #09769d; transform:translateY(3px); }
+    .primary.correct { background:var(--good); box-shadow:0 4px 0 #158657; }
+    .primary.wrong { background:var(--bad); box-shadow:0 4px 0 #c14646; }
+    .result { display:none; padding-top:16px; }
+    .score-orb { width:116px; height:116px; display:grid; place-items:center; margin:12px auto 26px; border-radius:50%; color:var(--sky-deep); background:var(--sky-pale); font-size:30px; font-weight:900; }
+    .score-orb small { display:block; margin-top:-8px; color:var(--muted); font-size:13px; text-align:center; }
+    .result h1 { text-align:center; } .result > p { color:var(--muted); text-align:center; }
+    .review { margin:28px 0; border-top:1px solid var(--line); }
+    .review-item { padding:17px 2px; border-bottom:1px solid var(--line); }
+    .review-item strong { display:block; margin-bottom:5px; font-size:15px; } .review-item span { color:var(--muted); font-size:14px; }
+    .restart { width:100%; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+    @media (min-width:700px) { .app { padding-top:34px; } .question-card { padding:34px 31px; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크 모드로 전환" title="테마 전환">☾</button>
+    <main class="welcome" id="welcome">
+      <p class="eyebrow">서양 근대 사회</p>
+      <h1>핵심 용어를<br>빈칸으로 익혀요.</h1>
+      <p>수행평가 준비 자료의 볼드체 핵심어를 문맥 속에서 직접 입력하며 복습하는 19문제 퀴즈입니다.</p>
+      <div class="welcome-meta" aria-label="퀴즈 정보"><span>총 19문제</span><span>즉시 채점</span><span>오답 다시 풀기</span></div>
+      <button class="primary start-quiz" id="startQuiz">퀴즈 시작하기</button>
+      <p class="privacy-note">2026/최우희 제작.</p>
+    </main>
+    <div class="top" id="quizTop" style="display:none">
+      <button class="close" id="resetButton" aria-label="처음부터 다시 풀기" title="처음부터 다시 풀기">×</button>
+      <div class="progress-track" aria-label="풀이 진행률"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <main id="quiz" style="display:none">
+      <p class="eyebrow" id="eyebrow">서양 근대 사회</p>
+      <h1 id="questionTitle">빈칸을 채워 보세요</h1>
+      <p class="guide">문장 속 빈칸에 알맞은 용어를 입력하세요.</p>
+      <section class="question-card" aria-live="polite"><p class="sentence" id="sentence"></p></section>
+      <div class="feedback" id="feedback" aria-live="assertive"></div>
+      <div class="actions">
+        <button class="secondary" id="previous" aria-label="이전 문제">←</button>
+        <button class="primary" id="checkButton">정답 확인</button>
+      </div>
+    </main>
+    <main class="result" id="result" aria-live="polite"></main>
+  </div>
+  <script>
+    const questions = [
+      {n:1, parts:['',' 국가에는 국가 업무를 효율적으로 수행할 수 있는 관료제를 운영하였고, 언제든지 동원할 수 있는 ','을 두어 전문적인 군사력을 유지하였다.'], answers:[['재정군사'],['상비군']]},
+      {n:2, parts:['재정·군사 국가에서는 왕의 권력을 정당화하기 위해 왕의 권력이 신으로부터 주어졌다는 ','을 제시하였다.'], answers:[['왕권신수설']]},
+      {n:3, parts:['재정·군사 국가에서는 상업을 중요시하여 수출을 장려하는 ',' 정책을 시행하였다.'], answers:[['중상주의']]},
+      {n:4, parts:['17세기 말 영국 의회는 국왕을 몰아내고 공주인 메리와 그녀의 남편 윌리엄을 공동 왕으로 세웠다. 이후 의회의 권한을 존중한 법안이 승인되어 영국에서는 의회를 중심으로 한 ','의 토대가 마련되었다.'], answers:[['입헌군주정']]},
+      {n:5, parts:['프랑스의 ','는 태양왕을 자처하며 절대 권력을 누렸으며, ','을 지어 자신의 권위를 과시했다.'], answers:[['루이14세'],['베르사유궁전']]},
+      {n:6, parts:['','은 인간의 이성을 통해 사회를 발전시킬 수 있다고 믿는 사상이다. 대표적인 사상가인 ','는 사회 구성원들 간의 계약을 통해 정부가 만들어진다는 ','을 주장하였다.'], answers:[['계몽사상'],['로크와루소'],['사회계약설']]},
+      {n:7, parts:['','는 지구가 태양의 주위를 돈다는 지동설을 주장하였으며, ','은 만유인력의 법칙을 비롯한 여러 가지 과학 법칙을 밝혀내었다.'], answers:[['갈릴레이'],['뉴턴']]},
+      {n:8, parts:['프랑스와의 전쟁으로 재정이 어려워진 영국은 ','을 제정하여 식민지인들에게 많은 세금을 부과하였다. 식민지인들은 ‘대표 없는 곳에 과세할 수 없다.’라며 저항했고, 이는 ','으로 이어졌다.'], answers:[['인지세법'],['보스턴차사건']]},
+      {n:9, parts:['식민지 대표들은 생명권, 자유권 및 행복추구권을 골자로 하는 ','을 발표하였다.'], answers:[['독립선언문']]},
+      {n:10, parts:['독립을 달성한 북아메리카 13개 주는 ',', ',', ','에 기초를 둔 헌법을 제정하였다.'], answers:[['연방주의'],['공화주의'],['삼권분립']]},
+      {n:11, parts:['','은 미국의 초대 대통령으로 선출되었고, 세계 최초의 ','인 미국이 수립되었다. 미국 혁명은 프랑스 혁명과 라틴 아메리카의 독립운동에 큰 영향을 미쳤다.'], answers:[['조지워싱턴'],['민주공화국']]},
+      {n:12, parts:['루이 16세는 전쟁과 왕실의 사치로 국가 재정이 어려워지자 ','를 소집하였다. 제3신분은 기존의 신분별 투표 대신 ','에 따른 투표를 주장하였다.'], answers:[['삼부회'],['머릿수']]},
+      {n:13, parts:['제3신분은 ','의 선언을 통해 별도의 의회를 구성하고 새 헌법이 제정될 때까지 해산하지 않겠다고 선언했다.'], answers:[['테니스코트','테니스코트의']]},
+      {n:14, parts:['','는 봉건제 폐지를 선언하고, 자유와 평등의 이념을 담은 ‘','’을 발표하였다. 그리고 새롭게 제정된 헌법에 따라 ','가 해산되고 입법 의회가 소집되었다.'], answers:[['국민의회'],['인간과시민의권리선언인권선언','인간과시민의권리선언','인권선언'],['국민의회']]},
+      {n:15, parts:['','는 ','을 선포한 뒤 봉건제와 노예제를 폐지하는 한편, 혁명에 반대하는 사람들을 탄압하는 ','를 실시하였다.'], answers:[['국민공회'],['공화정'],['공포정치']]},
+      {n:16, parts:['나폴레옹은 사회 제도의 개혁을 추진하고 ‘','’을 편찬하였다. 그는 영국을 굴복시키기 위해 유럽 대륙과 영국의 통상을 금지하는 ','을 내렸다.'], answers:[['나폴레옹법전'],['대륙봉쇄령']]},
+      {n:17, parts:['19세기 초 유럽 각국의 대표는 유럽 각 왕조의 영토와 지배권을 ',' 및 나폴레옹 시대 이전으로 되돌리는 데 합의하였다. 그 결과 ','와 민족주의 운동을 탄압하면서 보수적인 질서를 지키려는 ','가 성립되었다.'], answers:[['프랑스혁명'],['자유주의'],['빈체제']]},
+      {n:18, parts:['빈 체제 이후 프랑스의 왕이 전제 정치를 펼치자 자유주의자들과 시민들이 ','을 일으켰고, 루이 필리프를 왕으로 세우고 ','을 수립하였다.'], answers:[['7월혁명'],['입헌군주정']]},
+      {n:19, parts:['영국의 노동자들은 정치적 권리를 얻기 위해 ','을 발표하고, 이를 의회에 제출하기 위한 서명 운동인 ','을 벌였다.'], answers:[['인민헌장'],['차티스트운동']]}
+    ];
+    const storeKey = 'western-modern-society-quiz-v1';
+    let state = JSON.parse(localStorage.getItem(storeKey) || '{"current":0,"responses":{},"checked":{}}');
+    let current = Math.min(Math.max(state.current || 0, 0), questions.length - 1);
+    const $ = s => document.querySelector(s);
+    const normalize = value => value.replace(/[\s··,.'‘’“”"()（）\-]/g, '').toLowerCase();
+    function save(){ state.current=current; localStorage.setItem(storeKey, JSON.stringify(state)); }
+    function render(){
+      const q=questions[current]; $('#counter').textContent=`${q.n} / ${questions.length}`; $('#progressFill').style.width=`${(q.n/questions.length)*100}%`;
+      $('#eyebrow').textContent=`문제 ${q.n}`; $('#questionTitle').textContent='빈칸을 채워 보세요'; $('#previous').disabled=current===0;
+      const stored=state.responses[q.n] || []; const checked=state.checked[q.n]; const sentence=$('#sentence'); sentence.innerHTML='';
+      q.parts.forEach((part,i)=>{ sentence.append(document.createTextNode(part)); if(i<q.answers.length){ const input=document.createElement('input'); input.className='blank'; input.type='text'; input.autocomplete='off'; input.spellcheck=false; input.setAttribute('aria-label',`${q.n}번 빈칸 ${i+1}`); input.value=stored[i]||''; input.addEventListener('input',saveInputs); input.addEventListener('keydown',e=>{if(e.key==='Enter') check();}); if(checked){ const ok=q.answers[i].includes(normalize(input.value)); input.classList.add(ok?'is-good':'is-bad'); } sentence.append(input); }});
+      const inputs=[...document.querySelectorAll('.blank')]; const allCorrect=checked && inputs.every((input,i)=>q.answers[i].includes(normalize(input.value)));
+      $('#feedback').className='feedback '+(checked?(allCorrect?'good':'bad'):''); $('#feedback').textContent=checked?(allCorrect?'정답이에요! 정말 잘했어요.':'아쉬워요. 오답은 마지막에 다시 풀 수 있어요.'):'각 빈칸을 모두 입력한 뒤 정답을 확인하세요.';
+      const btn=$('#checkButton'); btn.textContent=checked?'다음 문제':'정답 확인'; btn.className='primary '+(checked?(allCorrect?'correct':'wrong'): '');
+      if(!checked) setTimeout(()=>inputs[0]?.focus(),0);
+    }
+    function saveInputs(){ const q=questions[current]; state.responses[q.n]=[...document.querySelectorAll('.blank')].map(x=>x.value); save(); }
+    function check(){
+      const q=questions[current], inputs=[...document.querySelectorAll('.blank')]; saveInputs();
+      if(inputs.some(x=>!x.value.trim())) { $('#feedback').className='feedback bad'; $('#feedback').textContent='아직 비어 있는 빈칸이 있어요.'; inputs.find(x=>!x.value.trim())?.focus(); return; }
+      if(state.checked[q.n]) { if(current<questions.length-1){ changeQuestion(current+1); } else showResult(); return; }
+      state.checked[q.n]=true; save(); render();
+    }
+    function changeQuestion(next){
+      const card=$('.question-card'); card.classList.add('question-swap');
+      setTimeout(()=>{ current=next; save(); render(); $('#quiz').classList.add('view-enter'); clearAnimation($('#quiz')); },180);
+    }
+    function clearAnimation(element){ setTimeout(()=>element.classList.remove('view-enter','is-leaving','question-swap'),450); }
+    function startQuiz(){
+      const welcome=$('#welcome'); welcome.classList.add('is-leaving');
+      setTimeout(()=>{ welcome.style.display='none'; $('#result').style.display='none'; $('#quiz').style.display='flex'; $('#quizTop').style.display='flex'; $('#quiz').classList.add('view-enter'); $('#quizTop').classList.add('view-enter'); render(); clearAnimation($('#quiz')); clearAnimation($('#quizTop')); },200);
+    }
+    function showWelcome(){
+      $('#result').style.display='none'; $('#quiz').style.display='none'; $('#quizTop').style.display='none'; const welcome=$('#welcome'); welcome.style.display='flex'; welcome.classList.add('view-enter'); clearAnimation(welcome);
+    }
+    function showResult(){
+      $('#welcome').style.display='none'; $('#quiz').style.display='none'; $('#quizTop').style.display='none'; const result=$('#result'); result.style.display='block';
+      const wrong=questions.filter(q=>{const a=state.responses[q.n]||[]; return !q.answers.every((valid,i)=>valid.includes(normalize(a[i]||'')));});
+      result.innerHTML=`<div class="score-orb">${questions.length-wrong.length}<small>/ ${questions.length} 정답</small></div><h1>${wrong.length ? '거의 다 왔어요!' : '완벽해요!'}</h1><p>${wrong.length ? '틀린 문제만 다시 확인해 보세요.' : '19문제를 모두 맞혔어요.'}</p>${wrong.length?`<div class="review">${wrong.map(q=>`<div class="review-item"><strong>${q.n}번</strong><span>정답: ${q.answers.map(a=>a[0]).join(' / ')}</span></div>`).join('')}</div><button class="primary restart" id="retry">오답 다시 풀기</button>`:''}<button class="secondary restart" style="margin-top:14px;width:100%" id="startOver">처음부터 풀기</button>`;
+      $('#retry')?.addEventListener('click',()=>{ const first=wrong[0]; current=questions.indexOf(first); wrong.forEach(q=>delete state.checked[q.n]); save(); result.style.display='none'; $('#quiz').style.display='flex'; $('#quizTop').style.display='flex'; render(); });
+      $('#startOver').addEventListener('click',reset);
+    }
+    function reset(){ if(!confirm('저장된 풀이 기록을 지우고 처음부터 시작할까요?')) return; state={current:0,responses:{},checked:{}}; current=0; save(); showWelcome(); }
+    function syncThemeButton(){ const dark=document.documentElement.dataset.theme==='dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches); $('#themeToggle').textContent=dark?'☀':'☾'; $('#themeToggle').setAttribute('aria-label',dark?'라이트 모드로 전환':'다크 모드로 전환'); }
+    function toggleTheme(){ const dark=document.documentElement.dataset.theme==='dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.dataset.theme=dark?'light':'dark'; localStorage.setItem('western-modern-society-theme',document.documentElement.dataset.theme); syncThemeButton(); }
+    const savedTheme=localStorage.getItem('western-modern-society-theme'); if(savedTheme) document.documentElement.dataset.theme=savedTheme; syncThemeButton();
+    $('#previous').addEventListener('click',()=>{if(current>0)changeQuestion(current-1);}); $('#checkButton').addEventListener('click',check); $('#resetButton').addEventListener('click',reset); $('#startQuiz').addEventListener('click',startQuiz); $('#themeToggle').addEventListener('click',toggleTheme);
+  </script>
+</body>
+</html>
